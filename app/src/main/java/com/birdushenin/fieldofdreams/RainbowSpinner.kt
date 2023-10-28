@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -15,24 +16,25 @@ import java.util.*
 class RainbowDrumView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val colors = intArrayOf(
-        Color.RED, Color.parseColor("#FFA500"), Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.parseColor("#4B0082")
+        Color.RED, Color.LTGRAY, Color.YELLOW, Color.GREEN, Color.CYAN,
+        Color.BLUE, Color.MAGENTA
     )
 
     private var colorNumberTextView: TextView? = null
     fun setColorNumberTextView(textView: TextView) {
         colorNumberTextView = textView
     }
+
     @SuppressLint("SetTextI18n")
     private fun updateColorNumberTextView() {
-//        colorNumberTextView?.text = "Color Number: $colorNumber"
         when (colorNumber) {
             0 -> colorNumberTextView?.text = "Красный"
-            1 -> colorNumberTextView?.text = "Оранжевый"
+            1 -> colorNumberTextView?.text = "Серый"
             2 -> colorNumberTextView?.text = "Желтый"
             3 -> colorNumberTextView?.text = "Зеленый"
             4 -> colorNumberTextView?.text = "Голубой"
             5 -> colorNumberTextView?.text = "Синий"
-            6 -> colorNumberTextView?.text = "Фиолетовый"
+            6 -> colorNumberTextView?.text = "Розовый"
         }
     }
     private val paint = Paint()
@@ -48,9 +50,6 @@ class RainbowDrumView(context: Context, attrs: AttributeSet) : View(context, att
 
         val width = width.toFloat()
         val height = height.toFloat()
-        val centerX = width / 2
-        val centerY = height / 2
-        val radius = width / 2
 
         for (i in colors.indices) {
             paint.color = colors[i]
@@ -84,9 +83,13 @@ class RainbowDrumView(context: Context, attrs: AttributeSet) : View(context, att
             isSpinning = false
             spinAnimator.cancel()
             colorNumber = this.rotation.toInt()
-            while (colorNumber >360) {colorNumber -= 360}
-            colorNumber /= (360/7)
-            colorNumber = 6 - colorNumber
+            if (colorNumber == 0){
+                colorNumber = 1
+            } else {
+                colorNumber % 360
+                colorNumber /= (360 / 7)
+                colorNumber = 6 - colorNumber
+            }
             updateColorNumberTextView()
         }
     }
