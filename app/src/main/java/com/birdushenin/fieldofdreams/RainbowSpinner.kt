@@ -6,37 +6,56 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import java.util.*
 
 class RainbowDrumView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val colors = intArrayOf(
-        Color.RED, Color.LTGRAY, Color.YELLOW, Color.GREEN, Color.CYAN,
-        Color.BLUE, Color.MAGENTA
+        Color.RED, Color.parseColor("#FFA500"), Color.YELLOW, Color.GREEN, Color.CYAN,
+        Color.BLUE, Color.parseColor("#4B0082")
     )
 
     private var colorNumberTextView: TextView? = null
+    private var imageView: ImageView? = null
+
     fun setColorNumberTextView(textView: TextView) {
         colorNumberTextView = textView
+    }
+
+    fun setImage(imageView: ImageView) {
+        this.imageView = imageView
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateColorNumberTextView() {
         when (colorNumber) {
-            0 -> colorNumberTextView?.text = "Красный"
-            1 -> colorNumberTextView?.text = "Серый"
-            2 -> colorNumberTextView?.text = "Желтый"
-            3 -> colorNumberTextView?.text = "Зеленый"
-            4 -> colorNumberTextView?.text = "Голубой"
-            5 -> colorNumberTextView?.text = "Синий"
-            6 -> colorNumberTextView?.text = "Розовый"
+            0 -> {
+                colorNumberTextView?.text = "Красный"
+                colorNumberTextView!!.visibility = VISIBLE
+            }
+            1 -> imageView?.visibility = VISIBLE
+            2 -> {
+                colorNumberTextView?.text = "Желтый"
+                colorNumberTextView!!.visibility = VISIBLE
+            }
+            3 -> imageView?.visibility = VISIBLE
+            4 -> {
+                colorNumberTextView?.text = "Голубой"
+                colorNumberTextView!!.visibility = VISIBLE
+            }
+            5 -> imageView?.visibility = VISIBLE
+            6 -> {
+                colorNumberTextView?.text = "Фиолетовый"
+                colorNumberTextView!!.visibility = VISIBLE
+            }
         }
     }
+
     private val paint = Paint()
     private var currentRotation = 0f
     var isSpinning = false
@@ -53,7 +72,16 @@ class RainbowDrumView(context: Context, attrs: AttributeSet) : View(context, att
 
         for (i in colors.indices) {
             paint.color = colors[i]
-            canvas?.drawArc(0f, 0f, width, height, i * 360f / 7 + currentRotation, 360f / 7, true, paint)
+            canvas?.drawArc(
+                0f,
+                0f,
+                width,
+                height,
+                i * 360f / 7 + currentRotation,
+                360f / 7,
+                true,
+                paint
+            )
         }
 
         if (isSpinning) {
@@ -83,7 +111,7 @@ class RainbowDrumView(context: Context, attrs: AttributeSet) : View(context, att
             isSpinning = false
             spinAnimator.cancel()
             colorNumber = this.rotation.toInt()
-            if (colorNumber == 0){
+            if (colorNumber == 0) {
                 colorNumber = 1
             } else {
                 colorNumber % 360
